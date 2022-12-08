@@ -10,8 +10,10 @@ import AppTopbar from './AppTopbar';
 import AppConfig from './AppConfig';
 import { LayoutContext } from './context/layoutcontext';
 import PrimeReact from 'primereact/api';
+import { useAuth } from '@/hooks/auth'
 
 const Layout = (props) => {
+    const { user } = useAuth({ middleware: 'auth' })
     const { layoutConfig, layoutState, setLayoutState } = useContext(LayoutContext);
     const topbarRef = useRef(null);
     const sidebarRef = useRef(null);

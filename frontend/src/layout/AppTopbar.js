@@ -4,8 +4,11 @@ import Router, { useRouter } from 'next/router';
 import { classNames } from 'primereact/utils';
 import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import { LayoutContext } from './context/layoutcontext';
+import { useAuth } from '@/hooks/auth'
 
 const AppTopbar = forwardRef((props, ref) => {
+
+    const { logout } = useAuth()
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
     const menubuttonRef = useRef(null);
     const topbarmenuRef = useRef(null);
@@ -46,12 +49,11 @@ const AppTopbar = forwardRef((props, ref) => {
                     <i className="pi pi-user"></i>
                     <span>Profile</span>
                 </button>
-                <Link href="/documentation">
-                    <button type="button" className="p-link layout-topbar-button">
-                        <i className="pi pi-cog"></i>
-                        <span>Settings</span>
-                    </button>
-                </Link>
+
+                <button type="button" className="p-link layout-topbar-button"  onClick={logout}>
+                    <i className="pi pi-cog"></i>
+                    <span>Settings</span>
+                </button>
             </div>
         </div>
     );

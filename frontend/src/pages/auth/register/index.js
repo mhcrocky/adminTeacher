@@ -14,12 +14,14 @@ import Link from 'next/link';
 const LoginPage = () => {
     const router = useRouter();
 
-    const { login } = useAuth({
+    const { register } = useAuth({
         middleware: 'guest',
         redirectIfAuthenticated: '/',
     })
+    const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [passwordConfirmation, setPasswordConfirmation] = useState('')
     const [shouldRemember, setShouldRemember] = useState(false)
     const [errors, setErrors] = useState([])
     const [status, setStatus] = useState(null)
@@ -34,15 +36,15 @@ const LoginPage = () => {
             setStatus(null)
         }
     })
-    const submitForm = async event => {
+    const submitForm = event => {
         event.preventDefault()
 
-        login({
+        register({
+            name,
             email,
             password,
-            remember: shouldRemember,
+            password_confirmation: passwordConfirmation,
             setErrors,
-            setStatus,
         })
     }
 
@@ -60,15 +62,25 @@ const LoginPage = () => {
                         </div>
 
                         <div>
+                            <label htmlFor="name" className="block text-900 text-xl font-medium mb-2">
+                                Name
+                            </label>
+                            <InputText inputid="name" value={name} onChange={event =>setName(event.target.value) } type="text" placeholder="Name" className="w-full md:w-30rem mb-5" style={{ padding: '1rem' }} />
+
                             <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
                                 Email
                             </label>
-                            <InputText inputid="email1" value={email} onChange={event =>setEmail(event.target.value) } type="text" placeholder="Email address" className="w-full md:w-30rem mb-5" style={{ padding: '1rem' }} />
+                            <InputText inputid="email1" value={email} onChange={event =>setEmail(event.target.value) } type="email" placeholder="Email address" className="w-full md:w-30rem mb-5" style={{ padding: '1rem' }} />
 
                             <label htmlFor="password1" className="block text-900 font-medium text-xl mb-2">
                                 Password
                             </label>
                             <Password inputid="password1" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" toggleMask className="w-full mb-5" inputClassName='w-full p-3 md:w-30rem'></Password>
+
+                            <label htmlFor="passwordConfirmation" className="block text-900 font-medium text-xl mb-2">
+                            Confirm Password
+                            </label>
+                            <Password inputid="passwordConfirmation" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} placeholder="Password" toggleMask className="w-full mb-5" inputClassName='w-full p-3 md:w-30rem'></Password>
 
                             <div className="flex align-items-center justify-content-between mb-5 gap-5">
                                 <div className="flex align-items-center">
@@ -77,11 +89,11 @@ const LoginPage = () => {
                                         Remember me
                                     </label>
                                 </div>
-                                <Link href={'/auth/register'} className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
-                                    Create a account.
+                                <Link href={'/auth/login'} className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
+                                    Already have a account?
                                 </Link>
                             </div>
-                            <Button label="Sign In" className="w-full p-3 text-xl"></Button>
+                            <Button label="Register" className="w-full p-3 text-xl"></Button>
                         </div>
                     </div>
                 </div>
