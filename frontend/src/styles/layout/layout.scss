@@ -10,3 +10,6 @@
 @import "./_responsive";
 @import "./_utils";
 @import "./_typography";
+.p-treetable .p-treetable-tbody > tr > td {
+    padding: 3px;
+}

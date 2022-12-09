@@ -1,4 +1,5 @@
 import getConfig from 'next/config';
+import axios from '@/lib/axios'
 
 export class NodeService {
     constructor() {
@@ -6,14 +7,15 @@ export class NodeService {
     }
 
     getTreeNodes() {
-        return fetch(this.contextPath + '/demo/data/treenodes.json', { headers: { 'Cache-Control': 'no-cache' } })
-            .then((res) => res.json())
-            .then((d) => d.root);
-    }
+        axios.get('/treedata')
+            .then(res => console.log(res))
 
+    }
     getTreeTableNodes() {
-        return fetch(this.contextPath + '/demo/data/treetablenodes.json', { headers: { 'Cache-Control': 'no-cache' } })
-            .then((res) => res.json())
-            .then((d) => d.root);
+        return axios.get('http://localhost/adminTeacher/public/api/treedata')
+            .then((res) => {
+                console.log(res.data.children);
+               return res.data.children;
+            })
     }
 }
