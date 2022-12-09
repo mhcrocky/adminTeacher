@@ -13,7 +13,20 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+use App\Http\Controllers\UserController;
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+
+
+Route::middleware(['auth:sanctum'])->group(function (){
+
+    Route::get('/children/{id}/all',[UserController::class,'allChildren']);
+    Route::get('/children/{id}',[UserController::class,'children']);
+    Route::get('/parents/{id}',[UserController::class,'parents']);
+    Route::get('/treedata',[UserController::class,'getTreeData']);
+    Route::get('/user/{id}',[UserController::class,'getUser']);
+    Route::post('/user',[UserController::class,'storeUser']);
+
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });
