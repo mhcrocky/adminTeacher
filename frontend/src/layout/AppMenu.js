@@ -13,12 +13,12 @@ const AppMenu = () => {
             label: 'Home',
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
         },
-        {
-            label: '--------------------',
-            items: [
-                { label: 'Test item', icon: 'pi pi-fw pi-id-card', to: '' },
-            ]
-        }
+        // {
+        //     label: '--------------------',
+        //     items: [
+        //         { label: 'Test item', icon: 'pi pi-fw pi-id-card', to: '' },
+        //     ]
+        // }
     ];
 
     return (

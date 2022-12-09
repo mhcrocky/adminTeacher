@@ -26,8 +26,7 @@ const AppTopbar = forwardRef((props, ref) => {
             <Link href="/">
                 <a className="layout-topbar-logo">
                     <>
-                        <img src={`${contextPath}/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} widt={'true'} alt="logo" />
-                        <span>SAKAI</span>
+                        <img src={`https://educa360beta-assets.educa360.net/files/5b9d063a-787c-4809-b2ba-6bf30a970057.png`} height={'35px'} widt={'true'} alt="logo" />
                     </>
                 </a>
             </Link>

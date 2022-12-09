@@ -8,9 +8,9 @@ const AppFooter = () => {
 
     return (
         <div className="layout-footer">
-            <img src={`${contextPath}/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Logo" height="20" className="mr-2" />
+            <img src={`https://educa360beta-assets.educa360.net/files/5b9d063a-787c-4809-b2ba-6bf30a970057.png`} alt="Logo" height="20" className="mr-2" />
             by
-            <span className="font-medium ml-2">PrimeReact</span>
+            <span className="font-medium ml-2">EDUCA Team</span>
         </div>
     );
 };
