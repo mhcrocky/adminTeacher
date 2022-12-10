@@ -8,13 +8,13 @@ export class NodeService {
 
     getTreeNodes() {
         axios.get('/treedata')
-            .then(res => console.log(res))
+            .then(res => // console.log(res))
 
     }
     getTreeTableNodes() {
         return axios.get('http://192.168.107.30:81/api/treedata')
             .then((res) => {
-                console.log(res.data.children);
+                // console.log(res.data.children);
                return res.data.children;
             })
     }

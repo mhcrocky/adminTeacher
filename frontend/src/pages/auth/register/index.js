@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useContext, useState ,useEffect } from 'react';
 import AppConfig from '../../../layout/AppConfig';
 import { Checkbox } from 'primereact/checkbox';
+import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { Password } from 'primereact/password';
 import { LayoutContext } from '../../../layout/context/layoutcontext';
@@ -20,6 +21,8 @@ const LoginPage = () => {
     })
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
+    const [dtype, setDType] = useState('')
+    const [type, setType] = useState('')
     const [password, setPassword] = useState('')
     const [passwordConfirmation, setPasswordConfirmation] = useState('')
     const [shouldRemember, setShouldRemember] = useState(false)
@@ -36,6 +39,11 @@ const LoginPage = () => {
             setStatus(null)
         }
     })
+    const setAType = (value) => {
+        // console.log(value)
+        setType(value.code);
+        setDType(value);
+    }
     const submitForm = event => {
         event.preventDefault()
 
@@ -43,11 +51,12 @@ const LoginPage = () => {
             name,
             email,
             password,
+            type,
             password_confirmation: passwordConfirmation,
             setErrors,
         })
     }
-
+    const constType = [{name:'partner',code:'partner'},{name:'teacher',code:'teacher'},{name:'user',code:'user'}];
     return (
         <div className={containerClassName}>
             <form onSubmit={submitForm}>
@@ -71,8 +80,12 @@ const LoginPage = () => {
                                 Email
                             </label>
                             <InputText inputid="email1" value={email} onChange={event =>setEmail(event.target.value) } type="email" placeholder="Email address" className="w-full md:w-30rem mb-5" style={{ padding: '1rem' }} />
+                            <label htmlFor="type" className="block text-900 text-xl font-medium mb-2">
+                                Type
+                            </label>
+                            <Dropdown value={dtype} options={constType} onChange={event =>setAType(event.value) } optionLabel="name" placeholder="Select a AccountType"  className="w-full md:w-30rem mb-5"/>
 
-                            <label htmlFor="password1" className="block text-900 font-medium text-xl mb-2">
+                            <label htmlFor="password1" className="block text-900 font-medium text-xl mb-2" >
                                 Password
                             </label>
                             <Password inputid="password1" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" toggleMask className="w-full mb-5" inputClassName='w-full p-3 md:w-30rem'></Password>

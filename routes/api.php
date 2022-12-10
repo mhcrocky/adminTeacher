@@ -22,7 +22,7 @@ Route::middleware(['auth:sanctum'])->group(function (){
     Route::get('/children/{id}/all',[UserController::class,'allChildren']);
     Route::get('/children/{id}',[UserController::class,'children']);
     Route::get('/parents/{id}',[UserController::class,'parents']);
-    Route::get('/treedata',[UserController::class,'getTreeData']);
+    Route::get('/treedata/{id}',[UserController::class,'getTreeData']);
     Route::get('/user/{id}',[UserController::class,'getUser']);
     Route::post('/user',[UserController::class,'storeUser']);
 

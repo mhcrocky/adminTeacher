@@ -3,22 +3,42 @@ import axios from '@/lib/axios'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 
-export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
+export const useAuth = ({ middleware ='auth', redirectIfAuthenticated  = '/'} = {}) => {
     const router = useRouter()
 
-    const { data: user, error, mutate } = useSWR('/api/user', () =>
+    const { data: auth, error, mutate } = useSWR('/api/user', () =>
         axios
             .get('/api/user')
             .then(res => res.data)
-            .catch(error => {
-                if (error.response.status !== 409) throw error
-
-                router.push('/verify-email')
+            .catch(err => {
+                console.log(err)
+                // router.push('/verify-email')
             }),
     )
 
     const csrf = () => axios.get('/sanctum/csrf-cookie')
 
+    const updateUser = async (props) =>{
+        return axios.post('/user/update',props).then((res) =>res.data )
+            .catch(err => {
+                // console.log(err);
+            });
+    }
+    const getTreeData = async (props) => {
+        // console.log(props)
+        return axios.get(`/api/treedata/${props}`).then((res) =>res.data )
+            .catch(err => {
+                // console.log(err);
+            });
+    }
+    const getParent = async ({setError,setStatus,...props}) =>{
+        await csrf()
+        setErrors([])
+        return axios.get('/api/user/parent').then((res) =>res.data )
+            .catch(err => {
+                // console.log(err);
+            });
+    }
     const register = async ({ setErrors, ...props }) => {
         await csrf()
 
@@ -99,23 +119,25 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     }
 
     useEffect(() => {
-        if (middleware === 'guest' && redirectIfAuthenticated && user)
+        if (middleware === 'guest' && redirectIfAuthenticated && auth)
             router.push(redirectIfAuthenticated)
         if (
             window.location.pathname === '/verify-email' &&
-            user?.email_verified_at
+            auth?.email_verified_at
         )
             router.push(redirectIfAuthenticated)
         if (middleware === 'auth' && error) logout()
-    }, [user, error])
+    }, [auth, error])
 
     return {
-        user,
+        auth,
         register,
         login,
         forgotPassword,
         resetPassword,
         resendEmailVerification,
+        updateUser,
+        getTreeData,
         logout,
     }
 }

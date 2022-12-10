@@ -44,9 +44,19 @@ class UserController extends Controller
             return response()->json(User::find($id)->parent);
         }
     }
-    public function getTreeData(Request $request )
+    public function getTreeData(Request $request,$id )
     {
-        $d = $request->user()->getTreeData();
-        return response()->json($d,200);
+        if(!User::find($id)){
+            return response()->json(['msg'=>'User not found'], 404,);
+        }
+        //TODO: check authticated user can access this user's data.
+        if($request->user()->hasAccess($id)){
+            $treeData = User::find($id)->getTreeData();
+            $treeData['data'] = User::find($id);
+            $treeData['parentData'] = User::find($id)->parentData();
+            return response()->json($treeData,200);
+        }else{
+            return response()->json(['msg'=>'permision error'], 403,);
+        }
     }
 }

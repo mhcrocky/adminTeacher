@@ -12,13 +12,26 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $fillable = ['name','email','password','parent_id','type','status'];
+    protected $fillable = ['name','email','password','parent_id','type','status','number','calendar','bio'];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    public function parentData()
+    {
+        $users = User::get();
+        $parent_list = [];
+        foreach ($users as $user) {
+            array_push($parent_list,[
+                'code'=>$user->id,
+                'name'=>$user->name,
+                'img_url'=>$user->img_url
+            ]);
+        }
+        return $parent_list;
+    }
     public function getTreeData($list = [])
     {
         $me = [
@@ -28,6 +41,7 @@ class User extends Authenticatable
                 'email'=>$this->email,
                 'type'=>$this->type,
                 'id'=>$this->id,
+                'img_url'=>$this->img_url
             ]
         ];
         $list = [];
@@ -35,6 +49,7 @@ class User extends Authenticatable
             array_push($list,$child->getTreeData());
         }
         $me['children'] = $list;
+        $me['child'] = $this->baby;
         return $me;
     }
     public function parent()
