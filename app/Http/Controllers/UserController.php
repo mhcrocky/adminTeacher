@@ -53,6 +53,14 @@ class UserController extends Controller
         if($request->user()->hasAccess($id)){
             $treeData = User::find($id)->getTreeData();
             $treeData['data'] = User::find($id);
+            $parent = User::find($id)->parent;
+            if($parent){
+                $treeData['data']['parent'] = [
+                    'code'=>$parent->id,
+                    'name'=>$parent->name,
+                    'img_url'=>$parent->img_url
+                ];
+            }
             $treeData['parentData'] = User::find($id)->parentData();
             return response()->json($treeData,200);
         }else{

@@ -1,69 +1,132 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
+import { InputNumber } from 'primereact/inputnumber';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { Calendar } from 'primereact/calendar';
+import { Badge } from 'primereact/badge';
+import { Dropdown } from 'primereact/dropdown';
+import { Avatar } from 'primereact/avatar';
+import { Toast } from 'primereact/toast';
+
 import { Button } from 'primereact/button';
-import { useRouter } from 'next/router';
+import { ToggleButton } from 'primereact/togglebutton';
+
+import { useAuth } from '@/hooks/auth';
 import { useUser } from '@/hooks/user';
-const ProfilePage = () => {
-    const {getUserData,setUserData} = useUser();
-    let router  = useRouter()
-    const id = router.query.id;
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [type, setType] = useState('')
-    const [changed,setChange] = useState(false);
-    useEffect(()=>{
-        getUserData(id).then(res=>{
-            setName(res.name);
-            setEmail(res.email);
-            setType(res.type);
-        });
-    },[id]);
-    const submitForm = () => {
-        setUserData({id,name,email,}).then(res=>{
-            setChange(false);
-            alert('okay');
-        }).catch(err=>{
-            setChange(false);
-            alert('error');
-        });
-    }
+
+const HomePage = () => {
+    const {auth,updateUser} = useAuth({middleware:'auth'});
+    const {user,setUser} = useUser();
+    const toast = useRef(null);
+
+    const [userData,setUserData] = useState({});
+    const [active, setActive] = useState(false);
+
     const handleInput = (type,value) => {
         if(type ==='name'){
-            setName(value);
+            setUserData({...userData,name:value});
         }
-        if(type ==='email'){
-            setEmail(value)
+        if(type ==='number'){
+            setUserData({...userData,number:value});
         }
-        setChange(true);
+        if(type ==='calendar'){
+            setUserData({...userData,calendar:value});
+        }
+        if(type ==='bio'){
+            setUserData({...userData,bio:value});
+        }
     }
-    return (
-        <div className="grid">
 
-            <div className="col-12 md:col-6">
+    const changeStatus = (value) => {
+        setActive(!value);
+    }
+
+    const submitForm = () => {
+        updateUser(userData).then(res=>{
+            toast.current.show({severity: 'success', summary: 'Success Message', detail: 'change saved'});
+        }).catch(err=>{
+            toast.current.show({severity: 'danger', summary: 'Error Message', detail: 'error occuped'});
+        });
+    }
+
+    const [parent, setParent] = useState(null);
+    const [parentData,setParentData] = useState([]);
+
+    const handleParentChange = (e) => {
+        setParent(e.value);
+    }
+
+    useEffect(()=>{
+        if(auth){
+            setUser(auth.id);
+        }
+        if(user){
+            setUserData(user.data);
+            setParent(user.data.parent);
+            setParentData(user.parentData);
+            setActive((user.status ==='active')?false:true);
+        }
+
+    },[user,auth]);
+    //templates
+    const ParentOptionTemplate = (option) => {
+        return (
+            <div style={{display:'flex'}}>
+                <Avatar image={option.img_url} />
+                <div style={{padding:'3px'}}>{option.name}</div>
+            </div>
+        );
+    }
+
+    return (
+        <>{auth?(
+        <div className="grid">
+            <Toast ref={toast} />
+            <div className="col-12 lg:col-6">
                 <div className="card">
-                    <h5>Edit User</h5>
+                    <h5>Profile</h5>
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="name">name</label>
-                            <InputText id="name" type="text" value={name} onChange={(e)=>handleInput('name',e.target.value)} />
+                        <div className="field col-12 lg:col-6">
+                            <label htmlFor="name">name</label><InputText id="name" type="text" value={userData?userData.name:''} onChange={(e)=>handleInput('name',e.target.value)} />
                         </div>
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="email">Email</label>
-                            <InputText id="email" type="email" value={email} onChange={(e)=>handleInput( 'email',e.target.value)} />
+                        <div className="field col-12 lg:col-6">
+                            <label htmlFor="email">Email</label><InputText id="email" type="email" value={userData?userData.email:''} disabled />
                         </div>
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="city">type</label>
-                            <InputText id="city" value={type} type="text" disabled />
+                        <div className="field col-12 lg:col-6">
+                            <label htmlFor="name">Number</label><InputNumber  value={userData?userData.number:''} onChange={(e)=>handleInput('number',e.value)}/>
                         </div>
-                        <div className="field col-12 md:col-6">
-                            <label htmlFor="city">Save Change</label>
-                            <Button onClick={()=>submitForm()} disabled={!changed}>Save</Button>
+                        <div className="field col-12 lg:col-6">
+                            <label htmlFor="email">Calendar</label><Calendar value={'Thu Jan 01 1970 04:00:00 GMT+0400 (Gulf Standard Time)'} onChange={(e)=>handleInput( 'calendar',e.target.value)} />
+                        </div>
+                        <div className="field col-12">
+                            <label htmlFor="city">Bio</label><InputTextarea value={userData?userData.bio?userData.bio:'':''} onChange={(e)=>handleInput( 'bio',e.target.value)} className='form-control' autoResize />
+                        </div>
+                    </div>
+                    <h5>Action</h5>
+                    <div className="p-fluid formgrid grid">
+                        <div className="field col-12 lg:col-6">
+                            <ToggleButton  checked={active} onLabel="Active Account" offLabel="Deactive Account" onChange={(e) => changeStatus(active)} onIcon="pi pi-check" offIcon="pi pi-times" aria-label="Confirmation" />
+                        </div>
+                        <div className="field col-12 lg:col-6">
+                            <Button onClick={()=>submitForm()}>Save Changes</Button>
+                        </div>
+                    </div>
+                </div>
+                <div className="card">
+                    <h5>Parent</h5>
+                    <div className="p-fluid formgrid grid">
+                        <div className="field col-12 lg:col-6">
+                            <Dropdown value={parent} options={parentData} onChange={handleParentChange} itemTemplate={ParentOptionTemplate} optionLabel="name" placeholder="Select a City" />
+                        </div>
+                        <div className="field col-12 lg:col-6">
+                            {/* <Button>Send request</Button> */}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        ):(<>Loading.....</>)}</>
     );
 };
 
-export default ProfilePage;
+export default HomePage;

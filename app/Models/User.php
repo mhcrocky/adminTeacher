@@ -55,7 +55,7 @@ class User extends Authenticatable
     public function parent()
     {
         return $this->hasOne(User::class,'id','parent_id')->where([
-            'type'=>$this->parentType(),
+            // 'type'=>$this->parentType(),
             'status'=>'active'
         ]);
     }

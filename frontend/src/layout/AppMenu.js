@@ -1,24 +1,16 @@
-import getConfig from 'next/config';
 import React, { useContext } from 'react';
 import AppMenuitem from './AppMenuitem';
-import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
-import Link from 'next/link';
 
 const AppMenu = () => {
-    const { layoutConfig } = useContext(LayoutContext);
-    const contextPath = getConfig().publicRuntimeConfig.contextPath;
     const model = [
         {
             label: 'Home',
-            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
+            items: [
+                { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
+                { label: 'Profile', icon: 'pi pi-fw pi-home', to: '/user/profile' },
+            ]
         },
-        // {
-        //     label: '--------------------',
-        //     items: [
-        //         { label: 'Test item', icon: 'pi pi-fw pi-id-card', to: '' },
-        //     ]
-        // }
     ];
 
     return (

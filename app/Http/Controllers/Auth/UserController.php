@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function updateUser(Request $request)
     {
-        $input = $request->only(['name', 'number','calendar','bio']);
+        $input = $request->only(['name', 'number','calendar','bio','parent_id']);
 
         if($request->user()->id == $request->id){
             return User::find($request->id)->update($input);

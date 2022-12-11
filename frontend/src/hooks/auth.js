@@ -11,7 +11,7 @@ export const useAuth = ({ middleware ='auth', redirectIfAuthenticated  = '/'} = 
             .get('/api/user')
             .then(res => res.data)
             .catch(err => {
-                console.log(err)
+                // console.log(err)
                 // router.push('/verify-email')
             }),
     )
@@ -21,14 +21,14 @@ export const useAuth = ({ middleware ='auth', redirectIfAuthenticated  = '/'} = 
     const updateUser = async (props) =>{
         return axios.post('/user/update',props).then((res) =>res.data )
             .catch(err => {
-                // console.log(err);
+                // // console.log(err);
             });
     }
     const getTreeData = async (props) => {
-        // console.log(props)
+        // // console.log(props)
         return axios.get(`/api/treedata/${props}`).then((res) =>res.data )
             .catch(err => {
-                // console.log(err);
+                // // console.log(err);
             });
     }
     const getParent = async ({setError,setStatus,...props}) =>{
@@ -36,7 +36,7 @@ export const useAuth = ({ middleware ='auth', redirectIfAuthenticated  = '/'} = 
         setErrors([])
         return axios.get('/api/user/parent').then((res) =>res.data )
             .catch(err => {
-                // console.log(err);
+                // // console.log(err);
             });
     }
     const register = async ({ setErrors, ...props }) => {

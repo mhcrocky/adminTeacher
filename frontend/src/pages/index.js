@@ -16,185 +16,46 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@/hooks/auth';
 import { useUser } from '@/hooks/user';
 
-const EditUserPage = () => {
-    const [parent, setParent] = useState(null);
-
-
-    const {auth,updateUser} = useAuth();
+const HomePage = () => {
+    const {auth} = useAuth({middleware:'auth'});
     const {user,setUser} = useUser();
     let router  = useRouter()
-    const id = router.query.id;
-    const [userData,setUserData] = useState({});
+
     const [treeNodes, setTreeNodes] = useState([]);
-    const [parentData,setParentData] = useState([]);
-    const [active, setActive] = useState(false);
-    const [changed,setChange] = useState(false);
     useEffect(()=>{
         if(auth){
             setUser(auth.id);
         }
         if(user){
-            console.log(user.parentData);
             setTreeNodes(user.children);
-            setUserData(user.data);
-            setParentData(user.parentData);
-            setActive((user.status ==='active')?false:true);
         }
-        // console.log(treeNodes.length);
 
     },[user,auth]);
-    const submitForm = () => {
-        updateUser(userData).then(res=>{
-            alert('okay');
-        }).catch(err=>{
-            alert('error');
-        });
-    }
-    const handleInput = (type,value) => {
-        console.log(userData.parent);
-        if(type ==='name'){
-            setUserData({...userData,name:value});
-        }
-        if(type ==='number'){
-            setUserData({...userData,number:value});
-        }
-        if(type ==='calendar'){
-            setUserData({...userData,calendar:value});
-        }
-        if(type ==='bio'){
-            setUserData({...userData,bio:value});
-        }
-        if(type ==='parent'){
-            setUserData({...userData,parent:value});
-        }
-        // console.log(userData)
-        setChange(true);
-    }
     const gotoEdit = (id) => {
         router.push(`/user/${id.key}/edit`);
     }
-    const changeStatus = (value) => {
-        setActive(!value);
-        alert('change status!!!!!');
-    }
 
-    const ActionTemplate = (row) => {
-        return(
-            <div>
-                <Button icon="pi pi-file-edit" onClick={()=>gotoEdit(row)} className="p-button-rounded p-button-text" style={{float:'right'}} />
-            </div>
-        )
-    }
-    const ActionHeaderTemplate = () => {
-        return('');
-    }
     const NameTeplate = (row) => {
-        let serverity = '';
-        switch (row.data.type) {
-            case 'partner':
-                serverity = 'success';
-                break;
-            case 'school':
-                serverity = 'info';
-                break;
-            case 'teacher':
-                serverity = 'warning';
-                break;
-            case 'userData':
-                serverity = 'danger';
-                break;
-            default:
-                break;
-        }
         return(
-            <span>
-            <img src={row.data.img_url} style={{height:'2rem',position:'relative',top:'.6rem',marginRight:'2rem',borderRadius:'2rem'}} />
-            {row.data.name}
-            <Avatar image=''/>
-            <Badge  value={row.data.type} style={{padding:'0px 10px',margin:'0px 10px'}} severity={serverity}></Badge>
+            <span  onClick={()=>gotoEdit(row)}>
+                <img src={row.data.img_url} style={{height:'2rem',position:'relative',top:'.6rem',marginRight:'2rem',borderRadius:'2rem'}} />
+                {row.data.name}<Avatar image=''/><Badge  value={row.data.type} style={{padding:'0px 10px',margin:'0px 10px'}} className={`${row.data.type}`}></Badge>
             </span>
         )
-    }
-    const ParentOptionTemplate = (option) => {
-        return (
-            <div style={{display:'flex'}}>
-                <Avatar image={option.img_url} />
-                <div style={{padding:'3px'}}>
-               {option.name}
-                </div>
-
-            </div>
-        );
     }
     return (
         <>{auth?(
         <div className="grid">
-             {treeNodes.length?<div className="col-12 lg:col-6">
-                <h5>userData Management</h5>
+             {treeNodes.length?<div className="col-12">
+                <h5>User Management</h5>
                 <TreeTable value={treeNodes}>
                     <Column field="name"  expander body={NameTeplate}></Column>
-                    <Column field="id" body={ActionTemplate} header={ActionHeaderTemplate} width={10} headerStyle={{width:'42px'}}></Column>
                 </TreeTable>
             </div>
             :<div className="col-12 lg:col-6">Loading......</div>}
-            <div className="col-12 lg:col-6">
-                <div className="card">
-                    <h5>Profile</h5>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 lg:col-6">
-                            <label htmlFor="name">name</label>
-                            <InputText id="name" type="text" value={userData?userData.name:''} onChange={(e)=>handleInput('name',e.target.value)} />
-                        </div>
-                        <div className="field col-12 lg:col-6">
-                            <label htmlFor="email">Email</label>
-                            <InputText id="email" type="email" value={userData?userData.email:''} disabled />
-                        </div>
-                        <div className="field col-12 lg:col-6">
-                            <label htmlFor="name">Number</label>
-                            <InputNumber  value={userData?userData.number:''} onChange={(e)=>handleInput('number',e.value)}/>
-                        </div>
-                        <div className="field col-12 lg:col-6">
-                            <label htmlFor="email">Calendar</label>
-                            <Calendar value={'Thu Jan 01 1970 04:00:00 GMT+0400 (Gulf Standard Time)'} onChange={(e)=>handleInput( 'calendar',e.target.value)} />
-                        </div>
-                        <div className="field col-12 lg:col-6">
-                            <label htmlFor="email">Calendar</label>
-                            <Dropdown   value={''} options={parentData}
-                                style={{minWidth: '14rem'}} placeholder={"Select a City"} onChange={(e)=>handleInput('parent',e.value)} itemTemplate={ParentOptionTemplate}/>
-                        </div>
-                        <div className="field col-12">
-                            <label htmlFor="city">Bio</label>
-                            <InputTextarea value={userData?userData.bio?userData.bio:'':''} onChange={(e)=>handleInput( 'bio',e.target.value)} className='form-control' autoResize />
-                        </div>
-                    </div>
-                    <h5>Status</h5>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-6 lg:col-6">
-                            <label htmlFor="type">type</label>
-                            <InputText id="type" value={userData?userData.type:''} type="text" disabled />
-                        </div>
-                        <div className="field col-6 lg:col-6">
-                            <label htmlFor="city">Charge</label>
-                            <InputNumber value={userData?userData.charge:''} disabled />
-                        </div>
-                    </div>
-                    <h5>Action</h5>
-                    <div className="p-fluid formgrid grid">
-
-                        <div className="field col-12 lg:col-6">
-                            <Button onClick={()=>submitForm()} disabled={!changed}>Save Changes</Button>
-                        </div>
-                        <div className="field col-12 lg:col-6">
-                            <ToggleButton className='form-control' checked={active} onLabel="Active Account" offLabel="Deactive Account" onChange={(e) => changeStatus(active)} onIcon="pi pi-check" offIcon="pi pi-times" aria-label="Confirmation" />
-                        </div>
-                    </div>
-                </div>
-                <div className="card">
-                </div>
-            </div>
         </div>
         ):(<>Loading.....</>)}</>
     );
 };
 
-export default EditUserPage;
+export default HomePage;
