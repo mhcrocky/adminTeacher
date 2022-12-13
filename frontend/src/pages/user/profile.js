@@ -3,7 +3,6 @@ import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
-import { Badge } from 'primereact/badge';
 import { Dropdown } from 'primereact/dropdown';
 import { Avatar } from 'primereact/avatar';
 import { Toast } from 'primereact/toast';
@@ -16,7 +15,7 @@ import { useUser } from '@/hooks/user';
 
 const HomePage = () => {
     const {auth,updateUser} = useAuth({middleware:'auth'});
-    const {user,setUser} = useUser();
+    const {user,setUser,addChild} = useUser();
     const toast = useRef(null);
 
     const [userData,setUserData] = useState({});
@@ -49,11 +48,26 @@ const HomePage = () => {
         });
     }
 
-    const [parent, setParent] = useState(null);
-    const [parentData,setParentData] = useState([]);
+    const [child, setChild] = useState(null);
+    const [childData,setChildData] = useState([]);
 
-    const handleParentChange = (e) => {
-        setParent(e.value);
+    const handleChildChange = (e) => {
+        setChild(e.value);
+    }
+
+    const addChildToUser = () => {
+        console.log(child);
+        if(!child){
+            toast.current.show({severity: 'danger', summary: 'Error Message', detail: 'Please select a child!!!'});
+        }else{
+            addChild(child.code).then(()=>{
+                toast.current.show({severity: 'success', summary: 'Success Message', detail: `${child.name} is added to your child!!!`});
+            }).catch(err=>{
+                toast.current.show({severity: 'danger', summary: 'Error Message', detail: 'Server Error'});
+            });
+            setChild(null);
+        }
+
     }
 
     useEffect(()=>{
@@ -62,14 +76,13 @@ const HomePage = () => {
         }
         if(user){
             setUserData(user.data);
-            setParent(user.data.parent);
-            setParentData(user.parentData);
+            setChildData(user.childData);
             setActive((user.status ==='active')?false:true);
         }
 
     },[user,auth]);
     //templates
-    const ParentOptionTemplate = (option) => {
+    const ChildOption = (option) => {
         return (
             <div style={{display:'flex'}}>
                 <Avatar image={option.img_url} />
@@ -113,13 +126,13 @@ const HomePage = () => {
                     </div>
                 </div>
                 <div className="card">
-                    <h5>Parent</h5>
+                    <h5>Child</h5>
                     <div className="p-fluid formgrid grid">
                         <div className="field col-12 lg:col-6">
-                            <Dropdown value={parent} options={parentData} onChange={handleParentChange} itemTemplate={ParentOptionTemplate} optionLabel="name" placeholder="Select a City" />
+                            <Dropdown value={child} options={childData} onChange={handleChildChange} itemTemplate={ChildOption} optionLabel="name" placeholder="Select a Child" />
                         </div>
                         <div className="field col-12 lg:col-6">
-                            {/* <Button>Send request</Button> */}
+                            <Button onClick={addChildToUser}>Add Child</Button>
                         </div>
                     </div>
                 </div>

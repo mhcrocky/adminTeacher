@@ -21,7 +21,28 @@ class User extends Authenticatable
 
     public function parentData()
     {
-        $users = User::get();
+        $users = User::where([
+            'parent_id'=>'',
+            'status'=>'active',
+            'type'=>$this->parentType()
+        ])->get();
+        $parent_list = [];
+        foreach ($users as $user) {
+            array_push($parent_list,[
+                'code'=>$user->id,
+                'name'=>$user->name,
+                'img_url'=>$user->img_url
+            ]);
+        }
+        return $parent_list;
+    }
+    public function childData()
+    {
+        $users = User::where([
+            'parent_id'=>'',
+            'status'=>'active',
+            'type'=>$this->childType()
+        ])->get();
         $parent_list = [];
         foreach ($users as $user) {
             array_push($parent_list,[

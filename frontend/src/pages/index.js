@@ -46,13 +46,12 @@ const HomePage = () => {
     return (
         <>{auth?(
         <div className="grid">
-             {treeNodes.length?<div className="col-12">
+            <div className="col-12">
                 <h5>User Management</h5>
                 <TreeTable value={treeNodes}>
                     <Column field="name"  expander body={NameTeplate}></Column>
                 </TreeTable>
             </div>
-            :<div className="col-12 lg:col-6">Loading......</div>}
         </div>
         ):(<>Loading.....</>)}</>
     );

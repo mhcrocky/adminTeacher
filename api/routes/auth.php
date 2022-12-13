@@ -9,7 +9,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/user/update',[UserController::class,'updateUser'])->middleware('auth')->name('update.user');
+Route::post('/auth/update',[UserController::class,'updateUser'])->middleware('auth')->name('update.user');
 Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('guest')->name('register');
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest')->name('login');

@@ -12,31 +12,14 @@ export const useAuth = ({ middleware ='auth', redirectIfAuthenticated  = '/'} = 
             .then(res => res.data)
             .catch(err => {
                 if (error.response.status !== 409) throw error
-
-                console.log(err.code)
-                // router.push('/verify-email')
+                router.push('/verify-email')
             }),
     )
 
     const csrf = () => axios.get('/sanctum/csrf-cookie')
 
     const updateUser = async (props) =>{
-        return axios.post('/user/update',props).then((res) =>res.data )
-            .catch(err => {
-                // // console.log(err);
-            });
-    }
-    const getTreeData = async (props) => {
-        // // console.log(props)
-        return axios.get(`/api/treedata/${props}`).then((res) =>res.data )
-            .catch(err => {
-                // // console.log(err);
-            });
-    }
-    const getParent = async ({setError,setStatus,...props}) =>{
-        await csrf()
-        setErrors([])
-        return axios.get('/api/user/parent').then((res) =>res.data )
+        return axios.post('/auth/update',props).then((res) =>res.data )
             .catch(err => {
                 // // console.log(err);
             });
@@ -139,7 +122,6 @@ export const useAuth = ({ middleware ='auth', redirectIfAuthenticated  = '/'} = 
         resetPassword,
         resendEmailVerification,
         updateUser,
-        getTreeData,
         logout,
     }
 }

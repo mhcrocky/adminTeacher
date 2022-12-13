@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function updateUser(Request $request)
     {
-        $input = $request->only(['name', 'number','calendar','bio','parent_id']);
+        $input = $request->only(['name', 'number','calendar','bio']);
 
         if($request->user()->id == $request->id){
             return User::find($request->id)->update($input);
@@ -20,4 +20,10 @@ class UserController extends Controller
         }
 
     }
+    #membership request
+    public function sendRequest(Request $request)
+    {
+        # code...
+    }
+    #
 }

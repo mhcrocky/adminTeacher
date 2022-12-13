@@ -17,9 +17,8 @@ import { useAuth } from '@/hooks/auth';
 import { useUser } from '@/hooks/user';
 
 const HomePage = () => {
-    const {auth,updateUser} = useAuth({middleware:'auth'});
-    const {user,setUser} = useUser();
     let router  = useRouter()
+    const {user,updateUser} = useUser({userId:router.query.id});
 
     const [userData,setUserData] = useState({});
     const [treeNodes, setTreeNodes] = useState([]);
@@ -28,9 +27,6 @@ const HomePage = () => {
     const [active, setActive] = useState(false);
     const [changed,setChange] = useState(false);
     useEffect(()=>{
-        if(auth){
-            setUser(auth.id);
-        }
         if(user){
             setTreeNodes(user.children);
             setUserData(user.data);
@@ -39,7 +35,7 @@ const HomePage = () => {
             setActive((user.status ==='active')?false:true);
         }
 
-    },[user,auth]);
+    },[user]);
     const submitForm = () => {
         updateUser(userData).then(res=>{
             alert('okay');
@@ -98,7 +94,7 @@ const HomePage = () => {
         );
     }
     return (
-        <>{auth?(
+        <>{user?(
         <div className="grid">
              {treeNodes.length?<div className="col-12 lg:col-6">
                 <h5>User Management</h5>
