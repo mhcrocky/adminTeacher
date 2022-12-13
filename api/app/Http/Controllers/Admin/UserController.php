@@ -45,7 +45,6 @@ class UserController extends Controller
                   'img_url'=>$parent->img_url
               ];
           }
-          $treeData['parentData'] = User::find($id)->parentData();
           $treeData['childData'] = User::find($id)->childData();
           return response()->json($treeData,200);
       }else{

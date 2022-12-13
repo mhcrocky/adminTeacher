@@ -22,7 +22,7 @@ class User extends Authenticatable
     public function parentData()
     {
         $users = User::where([
-            'parent_id'=>'',
+            'parent_id'=>0,
             'status'=>'active',
             'type'=>$this->parentType()
         ])->get();
@@ -39,19 +39,19 @@ class User extends Authenticatable
     public function childData()
     {
         $users = User::where([
-            'parent_id'=>'',
+            'parent_id'=>0,
             'status'=>'active',
             'type'=>$this->childType()
         ])->get();
-        $parent_list = [];
+        $child_list = [];
         foreach ($users as $user) {
-            array_push($parent_list,[
+            array_push($child_list,[
                 'code'=>$user->id,
                 'name'=>$user->name,
                 'img_url'=>$user->img_url
             ]);
         }
-        return $parent_list;
+        return $child_list;
     }
     public function getTreeData($list = [])
     {
@@ -70,7 +70,6 @@ class User extends Authenticatable
             array_push($list,$child->getTreeData());
         }
         $me['children'] = $list;
-        $me['child'] = $this->baby;
         return $me;
     }
     public function parent()

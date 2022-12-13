@@ -56,7 +56,7 @@ const LoginPage = () => {
             setErrors,
         })
     }
-    const constType = [{name:'partner',code:'partner'},{name:'teacher',code:'teacher'},{name:'user',code:'user'}];
+    const constType = [{name:'partner',code:'partner'},{name:'school',code:'school'},{name:'teacher',code:'teacher'},{name:'user',code:'user'}];
     return (
         <div className={containerClassName}>
             <form onSubmit={submitForm}>
