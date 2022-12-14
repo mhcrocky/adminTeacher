@@ -18,6 +18,13 @@ export default function MyApp({ Component, pageProps }) {
         return (
             <LayoutProvider>
                 <Layout>
+                    <Head>
+                        <link id="theme-css" href={`${contextPath}/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
+                    </Head>
+                    <body>
+                        <Main />
+                        <NextScript />
+                    </body>
                     <Component {...pageProps} />
                 </Layout>
             </LayoutProvider>

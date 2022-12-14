@@ -19,6 +19,13 @@ class MyDocument extends Document {
                     <Main />
                     <NextScript />
                 </body>
+                <Head>
+                    <link id="theme-css" href={`${contextPath}/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
+                </Head>
+                <body>
+                    <Main />
+                    <NextScript />
+                </body>
             </Html>
         );
     }
