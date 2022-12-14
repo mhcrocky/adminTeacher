@@ -14,5 +14,7 @@ use App\Http\Controllers\UserController;
 */
 
 
-
+Route::get('/',function() {
+  dd('Admin Teacher api');
+});
 require __DIR__.'/auth.php';
