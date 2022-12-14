@@ -15,7 +15,7 @@ import { Column } from 'primereact/column';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/hooks/auth';
 import { useUser } from '@/hooks/user';
-
+import Profile from './user/profile';
 const HomePage = () => {
     const {auth} = useAuth({middleware:'auth'});
     const {user,setUser} = useUser();
@@ -46,12 +46,15 @@ const HomePage = () => {
     return (
         <>{auth?(
         <div className="grid">
-            <div className="col-12">
-                <h5>User Management</h5>
-                <TreeTable value={treeNodes}>
-                    <Column field="name"  expander body={NameTeplate}></Column>
-                </TreeTable>
+            <div className="col-6">
+                <div className="card">
+                    <h5>User Management</h5>
+                    <TreeTable value={treeNodes}>
+                        <Column field="name"  expander body={NameTeplate}></Column>
+                    </TreeTable>
+                </div>
             </div>
+            <Profile/>
         </div>
         ):(<>Loading.....</>)}</>
     );

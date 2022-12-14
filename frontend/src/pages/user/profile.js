@@ -13,7 +13,7 @@ import { ToggleButton } from 'primereact/togglebutton';
 import { useAuth } from '@/hooks/auth';
 import { useUser } from '@/hooks/user';
 
-const HomePage = () => {
+const Profile = () => {
     const {auth,updateUser} = useAuth({middleware:'auth'});
     const {user,setUser,addChild} = useUser();
     const toast = useRef(null);
@@ -93,9 +93,9 @@ const HomePage = () => {
 
     return (
         <>{auth?(
-        <div className="grid">
-            <Toast ref={toast} />
-            <div className="col-12 lg:col-6">
+        // <div className="grid">
+        <div className="col-12 lg:col-6">
+                <Toast ref={toast} />
                 <div className="card">
                     <h5>Profile</h5>
                     <div className="p-fluid formgrid grid">
@@ -137,9 +137,9 @@ const HomePage = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        // </div>
         ):(<>Loading.....</>)}</>
     );
 };
 
-export default HomePage;
+export default Profile;

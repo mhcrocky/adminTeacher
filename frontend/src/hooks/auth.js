@@ -18,6 +18,10 @@ export const useAuth = ({ middleware ='auth', redirectIfAuthenticated  = '/'} = 
 
     const csrf = () => axios.get('/sanctum/csrf-cookie')
 
+    const requestMembership = async (post) => {
+        axios.post('/membership',props).then(()=>mutate())
+        .catch(err=>console.log(err));
+    } 
     const updateUser = async (props) =>{
         return axios.post('/auth/update',props).then((res) =>res.data )
             .catch(err => {
@@ -122,6 +126,7 @@ export const useAuth = ({ middleware ='auth', redirectIfAuthenticated  = '/'} = 
         resetPassword,
         resendEmailVerification,
         updateUser,
+        requestMembership,
         logout,
     }
 }

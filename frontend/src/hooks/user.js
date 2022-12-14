@@ -26,13 +26,7 @@ export const useUser = ({userId=0}={}) => {
             console.log(err);
         })
     }
-    const setParent = async (parent_id) => {
-        axios.get(`/api/user/parent/${id}/${parent_id}`).then(()=>mutate())
-        .catch(err=>{
-            console.log(err);
-        })
-    }
-
+    
     const updateUser = async (props) =>{
         return axios.post('/user/update',props).then(() =>mutate() )
             .catch(err => {
@@ -55,7 +49,6 @@ export const useUser = ({userId=0}={}) => {
         updateUser,
         setUser,
         addChild,
-        setParent,
         approveRequest
     }
 }

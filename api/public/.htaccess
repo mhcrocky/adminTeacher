@@ -2,7 +2,12 @@
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
-
+    
+    <IfModule mod_headers.c>
+        <FilesMatch "\.(bmp|cur|gif|ico|jpe?g|png|svgz?|webp|pdf|eot|otf|tt[cf]|woff2?)$">
+            Header set Cross-Origin-Resource-Policy 'cross-origin'
+        </FilesMatch>
+    </IfModule>
     RewriteEngine On
 
     # Handle Authorization Header
