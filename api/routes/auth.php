@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/update',[UserController::class,'updateUser'])->middleware('auth')->name('update.user');
+Route::post('/auth/membership',[UserController::class,'membership'])->middleware('auth')->name('membership.user');
 Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('guest')->name('register');
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest')->name('login');

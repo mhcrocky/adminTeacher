@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { InputText } from 'primereact/inputtext';
-import { InputNumber } from 'primereact/inputnumber';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Calendar } from 'primereact/calendar';
 import { Badge } from 'primereact/badge';
-import { Dropdown } from 'primereact/dropdown';
 import { Avatar } from 'primereact/avatar';
 
-import { Button } from 'primereact/button';
-import { ToggleButton } from 'primereact/togglebutton';
 import { TreeTable } from 'primereact/treetable';
 import { Column } from 'primereact/column';
 
@@ -16,6 +9,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@/hooks/auth';
 import { useUser } from '@/hooks/user';
 import Profile from './user/profile';
+import Membership from './user/request';
 const HomePage = () => {
     const {auth} = useAuth({middleware:'auth'});
     const {user,setUser} = useUser();
@@ -53,6 +47,7 @@ const HomePage = () => {
                         <Column field="name"  expander body={NameTeplate}></Column>
                     </TreeTable>
                 </div>
+                <Membership />
             </div>
             <Profile/>
         </div>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-
+use App\Models\Membership;
 class UserController extends Controller
 {
     public function setParent(Request $request,$id,$parent_id)
@@ -24,29 +24,49 @@ class UserController extends Controller
         $user = User::find($child_id)->update(['parent_id'=>$id]);
         return $user;
     }
+    ///admin features
     public function approveRequest(Request $request,$id)
     {
-        # code...
+        Membership::where(['id'=>$id])->update(['status'=>'active']);
     }
+    public function getAllRequest(Request $request)
+    {
+        $memberships = Membership::where(['status'=>'pending'])->get();
+        $data = [];
+        foreach ($memberships as $membership) {
+            $membership->user;
+            $membership->updater;
+            array_push($data,$membership);
+        }
+        return response()->json($data,200);
+    }
+    ///end admin features
     public function getUser(Request $request,$id)
     {
       if(!User::find($id)){
         return response()->json(['msg'=>'User not found'], 404,);
       }
+      $user = User::find($id);
+      if($user->status == 'deactive'){
+        return response()->json($user,200);
+      }                 
       //TODO: check authticated user can access this user's data.
       if($request->user()->hasAccess($id)){
-          $treeData = User::find($id)->getTreeData();
-          $treeData['data'] = User::find($id);
-          $parent = User::find($id)->parent;
+          $data =$user->getTreeData();
+          $data['data'] =$user;
+          $parent =$user->parent;
           if($parent){
-              $treeData['data']['parent'] = [
+              $data['data']['parent'] = [
                   'code'=>$parent->id,
                   'name'=>$parent->name,
                   'img_url'=>$parent->img_url
               ];
           }
-          $treeData['childData'] = User::find($id)->childData();
-          return response()->json($treeData,200);
+          $data['childData'] = User::find($id)->childData();
+          $availity = $user->availity();
+          $data['data']['availity'] = $availity;
+
+          return response()->json($data,200);
       }else{
           return response()->json(['msg'=>'permision error'], 403,);
       }

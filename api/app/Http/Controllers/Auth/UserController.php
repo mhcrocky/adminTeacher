@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-
+use App\Models\membership;
 class UserController extends Controller
 {
     public function updateUser(Request $request)
@@ -21,9 +21,17 @@ class UserController extends Controller
 
     }
     #membership request
-    public function sendRequest(Request $request)
+    public function membership(Request $request)
     {
-        # code...
+        $id  = $request->user()->id;
+        $membership = Membership::create([
+            'user_id'=>$request->user_id,
+            'type' =>$request->type,
+            'amount'=>$request->amount,
+            'status'=> 'pending',
+            'update_by'=> $id
+        ]);        
+        return response()->json($membership,200);
     }
     #
 }

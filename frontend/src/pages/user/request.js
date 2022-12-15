@@ -1,82 +1,109 @@
 import React, { useEffect, useState,useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
-import { InputNumber } from 'primereact/inputnumber';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Calendar } from 'primereact/calendar';
-import { Dropdown } from 'primereact/dropdown';
-import { Avatar } from 'primereact/avatar';
 import { Toast } from 'primereact/toast';
 
 import { Button } from 'primereact/button';
-import { ToggleButton } from 'primereact/togglebutton';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
 import { useAuth } from '@/hooks/auth';
 import { useUser } from '@/hooks/user';
+import { useMembership } from '@/hooks/request';
 
 const Profile = () => {
-    const {auth,updateUser} = useAuth({middleware:'auth'});
-    const {user,setUser,addChild} = useUser();
+    const {auth,requestMembership} = useAuth({middleware:'auth'});
+    const {user,setUser} = useUser();    
+    const {membership,approveRequest} = useMembership();    
     const toast = useRef(null);
 
-    const [userData,setUserData] = useState({});
-    const [active, setActive] = useState(false);
-
-
-    const submitForm = () => {
-        updateUser(userData).then(res=>{
-            toast.current.show({severity: 'success', summary: 'Success Message', detail: 'change saved'});
-        }).catch(err=>{
-            toast.current.show({severity: 'danger', summary: 'Error Message', detail: 'error occuped'});
-        });
+    const [type,setType] = useState('');
+    const [amount,setAmount] = useState(0);
+    const [availity,setAvaility] = useState(0);
+    const handleInput = (v) => {
+        setAmount(v);
     }
-
+    const submitForm = () => {
+        if(amount){
+            let data = {
+                user_id: auth.id ,
+                type:auth.type,
+                amount:amount 
+            }
+            requestMembership(data).then((res)=>{
+                console.log(res)
+            }).catch(err=>{
+                toast.current.show({severity: 'danger', summary: 'Error Message', detail: 'Server Error'});
+            });
+        }else{
+            toast.current.show({severity: 'danger', summary: 'Error Message', detail: 'Select amount'});
+        }
+    }
 
     useEffect(()=>{
         if(auth){
+            if(auth.type === 'teacher'|| auth.type === 'partner'){
+                setType(auth.type);
+            }
+            if(auth.type === 'owner'){
+                console.log(membership)
+            }
             setUser(auth.id);
         }
         if(user){
-            setUserData(user.data);
-            setActive((user.status ==='active')?false:true);
+            setAvaility(user.data.availity);
         }
+    },[auth]);
 
-    },[user,auth]);
-    //templates
-    const ChildOption = (option) => {
+    const TableAction = (row) => {
+        console.log(row)
+        const handleApprove = () => {
+            approveRequest(row.id);
+        }
         return (
-            <div style={{display:'flex'}}>
-                <Avatar image={option.img_url} />
-                <div style={{padding:'3px'}}>{option.name}</div>
-            </div>
-        );
+            <Button onClick={()=>handleApprove()}>Approve</Button>
+        )
     }
-
     return (
-        <>{auth?(
+        <>{type?(
         // <div className="grid">
-        <div className="col-12 lg:col-6">
-                <Toast ref={toast} />
-                <div className="card">
-                    <h5>Profile</h5>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 lg:col-6">
-                            <InputNumber  value={userData?userData.number:''} onChange={(e)=>handleInput('number',e.value)}/>
-                        </div>
-                        <div className="field col-12 lg:col-6">
-                            <Button onClick={()=>submitForm()}>Send Request</Button>
-                        </div>
+        <>
+            <Toast ref={toast} />
+            <div className="card">
+                <h5>MemberShip</h5>
+                <div className="p-fluid formgrid grid">
+                <div className="field col-12 lg:col-4">
+                        <label htmlFor="email">Availity</label>
+                        <InputText id="name" type="number" value={availity} disabled />
                     </div>
-                    <h5>Action</h5>
-                    <div className="p-fluid formgrid grid">
-                        <div className="field col-12 lg:col-6">
-                            <ToggleButton  checked={active} onLabel="Active Account" offLabel="Deactive Account" onChange={(e) => changeStatus(active)} onIcon="pi pi-check" offIcon="pi pi-times" aria-label="Confirmation" />
-                        </div>
-                        
+                    <div className="field col-12 lg:col-4">
+                        {type === 'teacher'?(
+                            <label htmlFor="email">Seat</label>
+                        ):(
+                            <label htmlFor="email">Account</label>
+                        )}
+                        <InputText id="name" type="number" value={amount} onChange={(e)=>handleInput(e.target.value)} />
+                    </div>
+                    <div className="field col-12 lg:col-4">
+                        <label htmlFor="email">Send Request</label><Button onClick={()=>submitForm()}>Send Request</Button>
                     </div>
                 </div>
             </div>
+            <div className="card">
+                
+            </div>
+        </>
         // </div>
-        ):(<>Loading.....</>)}</>
+        ):(<>{auth.type === 'owner'&&membership.length?(
+            <div>
+                <DataTable value={membership}>
+                    <Column field="user.name" header="Name"></Column>
+                    <Column field="type" header="Type"></Column>
+                    <Column field="amount" header="Amount"></Column>
+                    <Column header="Action" body={TableAction}></Column>
+                </DataTable>
+            </div>
+        ):(<></>)}
+        </>)}</>
     );
 };
 
