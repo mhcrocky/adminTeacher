@@ -5,6 +5,7 @@ import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Avatar } from 'primereact/avatar';
 
 import { useAuth } from '@/hooks/auth';
 import { useUser } from '@/hooks/user';
@@ -19,6 +20,7 @@ const Profile = () => {
     const [type,setType] = useState('');
     const [amount,setAmount] = useState(0);
     const [availity,setAvaility] = useState(0);
+    const [request,setRequest] = useState([]);
     const handleInput = (v) => {
         setAmount(v);
     }
@@ -30,7 +32,8 @@ const Profile = () => {
                 amount:amount 
             }
             requestMembership(data).then((res)=>{
-                console.log(res)
+                toast.current.show({severity: 'success', summary: 'Success Message', detail: 'Sent Membership request'});
+                setAmount(0);
             }).catch(err=>{
                 toast.current.show({severity: 'danger', summary: 'Error Message', detail: 'Server Error'});
             });
@@ -44,23 +47,35 @@ const Profile = () => {
             if(auth.type === 'teacher'|| auth.type === 'partner'){
                 setType(auth.type);
             }
-            if(auth.type === 'owner'){
-                console.log(membership)
+            if(auth.type === 'owner'&&membership){
+                setRequest(membership);
             }
             setUser(auth.id);
         }
         if(user){
             setAvaility(user.data.availity);
         }
-    },[auth]);
+    },[auth,user]);
 
+    const handleApprove = (row) => {
+        approveRequest(row.id).then(()=>{
+            toast.current.show({severity: 'success', summary: 'Success Message', detail: 'Membership request approved!'});
+        }).catch(()=>{
+            toast.current.show({severity: 'danger', summary: 'Error Message', detail: 'Server Error'});
+        });
+    }
     const TableAction = (row) => {
         console.log(row)
-        const handleApprove = () => {
-            approveRequest(row.id);
-        }
         return (
-            <Button onClick={()=>handleApprove()}>Approve</Button>
+            <Button onClick={()=>handleApprove(row)}>Approve</Button>
+        )
+    }
+    const NameTeplate = (row) => {
+        return(
+            <span>
+                <img src={row.user.img_url} style={{height:'2rem',position:'relative',top:'.6rem',marginRight:'2rem',borderRadius:'2rem'}} />
+                {row.user.name}<Avatar image=''/>
+            </span>
         )
     }
     return (
@@ -93,10 +108,13 @@ const Profile = () => {
             </div>
         </>
         // </div>
-        ):(<>{auth.type === 'owner'&&membership.length?(
-            <div>
-                <DataTable value={membership}>
-                    <Column field="user.name" header="Name"></Column>
+        ):(<>{auth.type === 'owner'&&request.length?(
+            <div className="card">
+                <Toast ref={toast} />
+
+                <h5>MemberShip Requests</h5>
+                <DataTable value={request}>
+                    <Column field="user.name" header="Name" body={NameTeplate}></Column>
                     <Column field="type" header="Type"></Column>
                     <Column field="amount" header="Amount"></Column>
                     <Column header="Action" body={TableAction}></Column>
