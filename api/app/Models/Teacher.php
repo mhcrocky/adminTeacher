@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Teacher extends User
 {
     use HasFactory;
+
+    
 }
