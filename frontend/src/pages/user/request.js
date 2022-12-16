@@ -108,7 +108,8 @@ const Profile = () => {
             </div>
         </>
         // </div>
-        ):(<>{auth.type === 'owner'&&request.length?(
+        ):(<>{auth&&request.length?(<>
+        {auth.type === 'owner'?(
             <div className="card">
                 <Toast ref={toast} />
 
@@ -120,6 +121,8 @@ const Profile = () => {
                     <Column header="Action" body={TableAction}></Column>
                 </DataTable>
             </div>
+        ):(<></>)}
+        </>
         ):(<></>)}
         </>)}</>
     );
