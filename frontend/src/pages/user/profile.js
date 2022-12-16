@@ -117,9 +117,9 @@ const Profile = () => {
                     </div>
                     <h5>Action</h5>
                     <div className="p-fluid formgrid grid">
-                        <div className="field col-12 lg:col-6">
+                        {/* <div className="field col-12 lg:col-6">
                             <ToggleButton  checked={active} onLabel="Active Account" offLabel="Deactive Account" onChange={(e) => changeStatus(active)} onIcon="pi pi-check" offIcon="pi pi-times" aria-label="Confirmation" />
-                        </div>
+                        </div> */}
                         <div className="field col-12 lg:col-6">
                             <Button onClick={()=>submitForm()}>Save Changes</Button>
                         </div>

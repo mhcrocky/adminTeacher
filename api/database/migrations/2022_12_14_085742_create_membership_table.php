@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('membership', function (Blueprint $table) {
+        Schema::create('memberships', function (Blueprint $table) {
             $table->id();
             $table->string('user_id');
-            $table->enum('type',['teacher_membership','partner_membership']);
+            $table->enum('type',['teacher','partner']);
             $table->string('amount');
             $table->enum('status',['active','decline','pending'])->default('pending');
             $table->string('update_by')->default('');

@@ -19,6 +19,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function availity()
+    {
+        $count = 0;
+        foreach ($this->membership as $membership) {
+            $count +=$membership->amount;
+        }
+        return $count;
+    }
     public function parentData()
     {
         $users = User::where([
@@ -71,6 +79,10 @@ class User extends Authenticatable
         }
         $me['children'] = $list;
         return $me;
+    }
+    public function membership()
+    {
+        return $this->hasMany(Membership::class,'user_id','id')->where(['status'=>'active']);
     }
     public function parent()
     {
